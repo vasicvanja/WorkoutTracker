@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WorkoutTracker.Repositories.Interfaces\WorkoutTracker.Repositories.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>
