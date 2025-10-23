@@ -366,3 +366,6 @@ FodyWeavers.xsd
 bin/
 obj/
 /WorkoutTracker/obj/Debug/net9.0/WorkoutTracker.assets.cache
+/WorkoutTracker/obj/project.assets.json
+/WorkoutTracker/obj/WorkoutTracker.csproj.nuget.dgspec.json
+/WorkoutTracker/obj/WorkoutTracker.csproj.nuget.g.targets
