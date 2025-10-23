@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # Build folders 
 bin/
 obj/
+/WorkoutTracker/obj/Debug/net9.0/WorkoutTracker.assets.cache
