@@ -369,3 +369,4 @@ obj/
 /WorkoutTracker/obj/project.assets.json
 /WorkoutTracker/obj/WorkoutTracker.csproj.nuget.dgspec.json
 /WorkoutTracker/obj/WorkoutTracker.csproj.nuget.g.targets
+/WorkoutTracker/obj/WorkoutTracker.csproj.nuget.g.props
