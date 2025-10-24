@@ -8,6 +8,12 @@ namespace WorkoutTracker.Mappers
     {
         public DomainToProfile()
         {
+            // Login
+            CreateMap<Login, LoginDto>();
+
+            // Register
+            CreateMap<Register, RegisterDto>();
+
             // Workout
             CreateMap<Workout, WorkoutDto>();
             CreateMap<WorkoutDto, Workout>();
