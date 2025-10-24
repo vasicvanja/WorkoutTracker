@@ -31,6 +31,7 @@
 	<ProjectReference Include="..\DIInstall\DIInstall.csproj" />
     <ProjectReference Include="..\WorkoutTracker.Data.EF\WorkoutTracker.Data.EF.csproj" />
 	<ProjectReference Include="..\WorkoutTracker.DomainModels\WorkoutTracker.DomainModels.csproj" />
+	<ProjectReference Include="..\WorkoutTracker.DTOs\WorkoutTracker.DTOs.csproj" />
   </ItemGroup>
 
 </Project>
