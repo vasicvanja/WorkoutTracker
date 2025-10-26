@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIInstall", "DIInstall\DIIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutTracker.Shared.DataContracts", "WorkoutTracker.Shared.DataContracts\WorkoutTracker.Shared.DataContracts.csproj", "{4CC63387-3DEC-408B-A452-8B98CBC9EC9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomValidation", "CustomValidation\CustomValidation.csproj", "{5A986742-A115-4C75-ADD5-D304E93A57C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{4CC63387-3DEC-408B-A452-8B98CBC9EC9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CC63387-3DEC-408B-A452-8B98CBC9EC9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CC63387-3DEC-408B-A452-8B98CBC9EC9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A986742-A115-4C75-ADD5-D304E93A57C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A986742-A115-4C75-ADD5-D304E93A57C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A986742-A115-4C75-ADD5-D304E93A57C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A986742-A115-4C75-ADD5-D304E93A57C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{534AC9A9-50E8-4ED6-A473-D714C4F37481} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7BA87273-9BD2-4C46-8963-98B5F5DBA943} = {01F29EB3-8CA3-4A2B-8176-65D443D523F5}
 		{4CC63387-3DEC-408B-A452-8B98CBC9EC9A} = {01F29EB3-8CA3-4A2B-8176-65D443D523F5}
+		{5A986742-A115-4C75-ADD5-D304E93A57C3} = {01F29EB3-8CA3-4A2B-8176-65D443D523F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {97BF30A3-ECE3-4B65-8B7E-022551636575}

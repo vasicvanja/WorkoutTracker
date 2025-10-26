@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CustomValidation.Impl;
+using CustomValidation.Interface;
+using Microsoft.Extensions.DependencyInjection;
 using WorkoutTracker.Repositories;
 using WorkoutTracker.Repositories.Interfaces;
 using WorkoutTracker.Services;
@@ -33,6 +35,9 @@ namespace DIInstall
 
             // Password Encryption
             serviceCollection.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
+
+            // Validator
+            serviceCollection.AddSingleton<IEmailValidator, EmailValidator>();
         }
     }
 }

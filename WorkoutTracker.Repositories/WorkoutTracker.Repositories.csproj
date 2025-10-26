@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CustomValidation\CustomValidation.csproj" />
     <ProjectReference Include="..\WorkoutTracker.Data.EF\WorkoutTracker.Data.EF.csproj" />
     <ProjectReference Include="..\WorkoutTracker.Repositories.Interfaces\WorkoutTracker.Repositories.Interfaces.csproj" />
     <ProjectReference Include="..\WorkoutTracker.Services.Interfaces\WorkoutTracker.Services.Interfaces.csproj" />
