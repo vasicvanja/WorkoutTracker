@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Edge Swagger",
+        Title = "WorkoutTracker Swagger",
         Version = "v1"
     });
     options.AddSecurityDefinition("Bearer Token", new OpenApiSecurityScheme
@@ -62,7 +62,7 @@ builder.Services.AddCors(option =>
 {
     option.AddPolicy("MyPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader();
     });

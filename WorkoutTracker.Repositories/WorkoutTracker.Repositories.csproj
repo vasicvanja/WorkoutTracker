@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WorkoutTracker.Data.EF\WorkoutTracker.Data.EF.csproj" />
     <ProjectReference Include="..\WorkoutTracker.Repositories.Interfaces\WorkoutTracker.Repositories.Interfaces.csproj" />
+    <ProjectReference Include="..\WorkoutTracker.Services.Interfaces\WorkoutTracker.Services.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

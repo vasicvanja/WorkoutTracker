@@ -17,9 +17,22 @@ namespace DIInstall
         /// <param name="serviceCollection"></param>
         public static void InstallAppDependencies(this IServiceCollection serviceCollection)
         {
+            // Authentication
+            serviceCollection.AddTransient<IAuthService, AuthService>();
+
             // Users
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
             serviceCollection.AddScoped<IUsersService, UsersService>();
+
+            // SMTP Settings
+            serviceCollection.AddScoped<ISmtpSettingsService, SmtpSettingsService>();
+            serviceCollection.AddScoped<ISmtpSettingsRepository, SmtpSettingsRepository>();
+
+            // Email
+            serviceCollection.AddScoped<IEmailService, EmailService>();
+
+            // Password Encryption
+            serviceCollection.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
         }
     }
 }

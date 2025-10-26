@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WorkoutTracker.DTOs\WorkoutTracker.DTOs.csproj" />
+    <ProjectReference Include="..\WorkoutTracker.Shared.DataContracts\WorkoutTracker.Shared.DataContracts.csproj" />
+  </ItemGroup>
+
 </Project>
