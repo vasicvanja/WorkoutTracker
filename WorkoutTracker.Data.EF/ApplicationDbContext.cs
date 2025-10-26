@@ -72,19 +72,24 @@ namespace WorkoutTracker.Data.EF
 
         private void SeedRoles(ModelBuilder builder)
         {
+            string adminRoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
+            string userRoleId = "cb2db39f-bbd0-4c60-8512-3289c8a83f12";
+
             builder.Entity<IdentityRole>().HasData
             (
                 new IdentityRole()
                 {
+                    Id = adminRoleId,
                     Name = "Admin",
                     ConcurrencyStamp = "1",
-                    NormalizedName = "Admin"
+                    NormalizedName = "ADMIN"
                 },
                 new IdentityRole()
                 {
+                    Id = userRoleId,
                     Name = "User",
                     ConcurrencyStamp = "2",
-                    NormalizedName = "User"
+                    NormalizedName = "USER"
                 }
             );
         }
