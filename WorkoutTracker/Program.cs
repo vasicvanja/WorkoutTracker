@@ -16,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Set to null to preserve the original casing
+        // Set to null to preserve the original casing
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
     });
 
 builder.Services.AddAutoMapper(cfg => cfg.LicenseKey = builder.Configuration["AutoMapper:LicenseKey"], typeof(Program));
