@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WorkoutTracker.DomainModels;
 
@@ -55,6 +56,8 @@ namespace WorkoutTracker.Data.EF
                 .WithMany(u => u.Measurements)
                 .HasForeignKey(m => m.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            SeedRoles(modelBuilder);
         }
 
         public DbSet<Workout> Workouts { get; set; }
@@ -64,5 +67,33 @@ namespace WorkoutTracker.Data.EF
         public DbSet<Measurement> Measurements { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
         public DbSet<SmtpSettings> SmtpSettings { get; set; }
+
+        #region Private Methods
+
+        private void SeedRoles(ModelBuilder builder)
+        {
+            string adminRoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
+            string userRoleId = "cb2db39f-bbd0-4c60-8512-3289c8a83f12";
+
+            builder.Entity<IdentityRole>().HasData
+            (
+                new IdentityRole()
+                {
+                    Id = adminRoleId,
+                    Name = "Admin",
+                    ConcurrencyStamp = "1",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole()
+                {
+                    Id = userRoleId,
+                    Name = "User",
+                    ConcurrencyStamp = "2",
+                    NormalizedName = "USER"
+                }
+            );
+        }
+
+        #endregion
     }
 }
