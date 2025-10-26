@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CustomValidation.Impl;
+using CustomValidation.Interface;
+using Microsoft.Extensions.DependencyInjection;
 using WorkoutTracker.Repositories;
 using WorkoutTracker.Repositories.Interfaces;
 using WorkoutTracker.Services;
@@ -24,6 +26,10 @@ namespace DIInstall
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
             serviceCollection.AddScoped<IUsersService, UsersService>();
 
+            // Roles
+            serviceCollection.AddScoped<IRolesRepository, RolesRepository>();
+            serviceCollection.AddScoped<IRolesService, RolesService>();
+
             // SMTP Settings
             serviceCollection.AddScoped<ISmtpSettingsService, SmtpSettingsService>();
             serviceCollection.AddScoped<ISmtpSettingsRepository, SmtpSettingsRepository>();
@@ -33,6 +39,9 @@ namespace DIInstall
 
             // Password Encryption
             serviceCollection.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
+
+            // Validator
+            serviceCollection.AddSingleton<IEmailValidator, EmailValidator>();
         }
     }
 }
