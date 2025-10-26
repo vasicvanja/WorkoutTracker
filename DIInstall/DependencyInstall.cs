@@ -26,6 +26,10 @@ namespace DIInstall
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
             serviceCollection.AddScoped<IUsersService, UsersService>();
 
+            // Roles
+            serviceCollection.AddScoped<IRolesRepository, RolesRepository>();
+            serviceCollection.AddScoped<IRolesService, RolesService>();
+
             // SMTP Settings
             serviceCollection.AddScoped<ISmtpSettingsService, SmtpSettingsService>();
             serviceCollection.AddScoped<ISmtpSettingsRepository, SmtpSettingsRepository>();
