@@ -26,6 +26,10 @@ namespace DIInstall
             serviceCollection.AddScoped<IMeasurementsRepository, MeasurementsRepository>();
             serviceCollection.AddScoped<IMeasurementsService, MeasurementsService>();
 
+            // Goals
+            serviceCollection.AddScoped<IGoalsRepository, GoalsRepository>();
+            serviceCollection.AddScoped<IGoalsService, GoalsService>();
+
             // Users
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
             serviceCollection.AddScoped<IUsersService, UsersService>();
