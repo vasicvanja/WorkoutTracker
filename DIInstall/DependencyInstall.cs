@@ -22,6 +22,10 @@ namespace DIInstall
             // Authentication
             serviceCollection.AddTransient<IAuthService, AuthService>();
 
+            // Measurements
+            serviceCollection.AddScoped<IMeasurementsRepository, MeasurementsRepository>();
+            serviceCollection.AddScoped<IMeasurementsService, MeasurementsService>();
+
             // Users
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
             serviceCollection.AddScoped<IUsersService, UsersService>();

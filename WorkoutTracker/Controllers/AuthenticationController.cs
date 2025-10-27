@@ -46,7 +46,7 @@ namespace WorkoutTracker.Controllers
         /// </summary>
         /// <param name="register"></param>
         /// <returns></returns>
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto register)
         {
             if (!ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace WorkoutTracker.Controllers
         /// </summary>
         /// <param name="login"></param>
         /// <returns></returns>
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto login)
         {
             try
@@ -140,7 +140,7 @@ namespace WorkoutTracker.Controllers
         /// Logout user.
         /// </summary>
         /// <returns></returns>
-        [HttpPost("Logout")]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             try
