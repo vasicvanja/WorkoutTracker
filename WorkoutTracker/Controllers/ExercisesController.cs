@@ -64,7 +64,6 @@ namespace WorkoutTracker.Controllers
         /// <summary>
         /// Get all Exercises.
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("all")]

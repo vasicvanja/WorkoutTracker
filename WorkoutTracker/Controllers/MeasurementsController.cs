@@ -60,6 +60,32 @@ namespace WorkoutTracker.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all Measurements for User.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("allByUserId")]
+        public async Task<IActionResult> GetAllByUserId(string userId)
+        {
+            try
+            {
+                var measurements = await _measurementsService.GetAllByUserId(userId);
+                return Ok(Conversion<List<MeasurementDto>>.ReturnResponse(measurements));
+            }
+            catch (Exception ex)
+            {
+                var errRet = new DataResponse<List<MeasurementDto>>
+                {
+                    Data = null,
+                    ResponseCode = EDataResponseCode.GenericError,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message
+                };
+                return BadRequest(Conversion<List<MeasurementDto>>.ReturnResponse(errRet));
+            }
+        }
+
         #endregion
 
         #region CREATE
@@ -93,32 +119,6 @@ namespace WorkoutTracker.Controllers
                     ErrorMessage = ex.Message
                 };
                 return BadRequest(Conversion<int>.ReturnResponse(errRet));
-            }
-        }
-
-        /// <summary>
-        /// Get all Measurements for User.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("all")]
-        public async Task<IActionResult> GetAllByUserId(string userId)
-        {
-            try
-            {
-                var measurements = await _measurementsService.GetAllByUserId(userId);
-                return Ok(Conversion<List<MeasurementDto>>.ReturnResponse(measurements));
-            }
-            catch (Exception ex)
-            {
-                var errRet = new DataResponse<List<MeasurementDto>>
-                {
-                    Data = null,
-                    ResponseCode = EDataResponseCode.GenericError,
-                    Succeeded = false,
-                    ErrorMessage = ex.Message
-                };
-                return BadRequest(Conversion<List<MeasurementDto>>.ReturnResponse(errRet));
             }
         }
 

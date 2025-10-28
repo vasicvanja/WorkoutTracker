@@ -65,7 +65,7 @@ namespace WorkoutTracker.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("all")]
+        [Route("allByUserId")]
         public async Task<IActionResult> GetAllByUserId(string userId)
         {
             try

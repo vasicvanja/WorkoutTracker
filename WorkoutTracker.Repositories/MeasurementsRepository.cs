@@ -93,6 +93,7 @@ namespace WorkoutTracker.Repositories
                 var measurements = await _applicationDbContext
                     .Measurements
                     .Where(x => x.UserId == userId)
+                    .OrderByDescending(x => x.DateCreated)
                     .ToListAsync();
 
                 if (measurements == null)

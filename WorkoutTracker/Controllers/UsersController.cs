@@ -158,7 +158,7 @@ namespace WorkoutTracker.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        [Route("{id}/enableDisableUser")]
+        [Route("enableDisableUser/{id}")]
         public async Task<IActionResult> EnableDisableUser(string id, bool enabled)
         {
             try
@@ -184,7 +184,7 @@ namespace WorkoutTracker.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        [Route("{id}/addRoleToUser")]
+        [Route("addRoleToUser/{id}")]
         public async Task<IActionResult> AddRoleToUser(string id, string roleName)
         {
             try
@@ -206,7 +206,7 @@ namespace WorkoutTracker.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        [Route("{id}/removeRoleFromUser")]
+        [Route("removeRoleFromUser/{id}")]
         public async Task<IActionResult> RemoveRoleFromUser(string id, string roleName)
         {
             try
