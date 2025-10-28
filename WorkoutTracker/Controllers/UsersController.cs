@@ -180,6 +180,54 @@ namespace WorkoutTracker.Controllers
 
         #endregion
 
+        #region USER ROLE MANAGEMENT
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("{id}/addRoleToUser")]
+        public async Task<IActionResult> AddRoleToUser(string id, string roleName)
+        {
+            try
+            {
+                var result = await _usersService.AddRoleToUser(id, roleName);
+                return Ok(Conversion<bool>.ReturnResponse(result));
+            }
+            catch (Exception ex)
+            {
+                var errRet = new DataResponse<bool>
+                {
+                    ResponseCode = EDataResponseCode.GenericError,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message
+                };
+                return BadRequest(Conversion<bool>.ReturnResponse(errRet));
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("{id}/removeRoleFromUser")]
+        public async Task<IActionResult> RemoveRoleFromUser(string id, string roleName)
+        {
+            try
+            {
+                var result = await _usersService.RemoveRoleFromUser(id, roleName);
+                return Ok(Conversion<bool>.ReturnResponse(result));
+            }
+            catch (Exception ex)
+            {
+                var errRet = new DataResponse<bool>
+                {
+                    ResponseCode = EDataResponseCode.GenericError,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message
+                };
+                return BadRequest(Conversion<bool>.ReturnResponse(errRet));
+            }
+        }
+
+        #endregion
+
         #region DELETE
 
         /// <summary>

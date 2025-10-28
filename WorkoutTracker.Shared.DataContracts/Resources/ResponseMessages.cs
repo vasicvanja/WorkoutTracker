@@ -33,9 +33,14 @@
         public const string InvalidInputParameter = "Enter valid parameters for entity of type {0}.";
         public const string UnsuccessfulUpdateOfEntity = "Unsuccessful update of entity of type {0} with Id {1}.";
         public const string FailedToAssignRoleToUser = "Failed to assign role {0} to user {1} with id {2}.";
+        public const string FailedToAssignRoleToUserId = "Failed to assign role {0} to user with id {1}.";
         public const string The_record_you_are_working_on_has_been_modified_by_another_user_Changes_you_have_made_have_not_been_saved_please_resubmit = "The record you are working on has been modified by another user. Changes you have made have not been saved please resubmit.";
         public const string UserNotUpdatedEmailAlreadyExist = "User {0} not updated, email {1} already exists.";
         public const string UserNotUpdatedEmailAlreadyUsedAsUsernameFromOtherUser = "User {0} not updated email {1} already used as username from other user.";
         public const string RoleMustBeAdminOrUser = "The role must be of type Admin or User!";
+        public const string UserAlreadyHasRole = "User {0} already has the role {1}.";
+        public const string UserDoesNotHaveRole = "User {0} does not have the role {1}.";
+        public const string FailedToRemoveRoleFromUser = "Failed to remove role {0} from user {1} with id {2}.";
+        public const string FailedToRemoveRoleFromUserId = "Failed to remove role {0} from user with id {1}.";
     }
 }

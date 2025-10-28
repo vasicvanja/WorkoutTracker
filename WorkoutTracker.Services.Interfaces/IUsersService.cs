@@ -41,6 +41,22 @@ namespace WorkoutTracker.Services.Interfaces
         Task<DataResponse<bool>> EnableDisableUser(string id, bool enabled);
 
         /// <summary>
+        /// Add Role to User.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        Task<DataResponse<bool>> AddRoleToUser(string userId, string roleName);
+
+        /// <summary>
+        /// Remove Role from User.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        Task<DataResponse<bool>> RemoveRoleFromUser(string userId, string roleName);
+
+        /// <summary>
         /// Delete a User by Id.
         /// </summary>
         /// <param name="id"></param>

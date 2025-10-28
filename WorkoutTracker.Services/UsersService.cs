@@ -64,6 +64,22 @@ namespace WorkoutTracker.Services
         public async Task<DataResponse<bool>> EnableDisableUser(string id, bool enabled) => await _usersRepository.EnableDisableUser(id, enabled);
 
         /// <summary>
+        /// Add Role to User.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<DataResponse<bool>> AddRoleToUser(string userId, string roleName) => await _usersRepository.AddRoleToUser(userId, roleName);
+
+        /// <summary>
+        /// Remove Role from User.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<DataResponse<bool>> RemoveRoleFromUser(string userId, string roleName) => await _usersRepository.RemoveRoleFromUser(userId, roleName);
+
+        /// <summary>
         /// Delete a User.
         /// </summary>
         /// <param name="id"></param>
