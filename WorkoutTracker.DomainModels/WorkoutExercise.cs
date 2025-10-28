@@ -4,6 +4,8 @@ namespace WorkoutTracker.DomainModels
 {
     public class WorkoutExercise
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public int Sets { get; set; }
         public int Repetitions { get; set; }
         public decimal Weight { get; set; }

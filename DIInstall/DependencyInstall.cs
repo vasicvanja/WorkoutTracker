@@ -30,6 +30,10 @@ namespace DIInstall
             serviceCollection.AddScoped<IGoalsRepository, GoalsRepository>();
             serviceCollection.AddScoped<IGoalsService, GoalsService>();
 
+            // Workouts
+            serviceCollection.AddScoped<IWorkoutsRepository, WorkoutsRepository>();
+            serviceCollection.AddScoped<IWorkoutsService, WorkoutsService>();
+
             // Users
             serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
             serviceCollection.AddScoped<IUsersService, UsersService>();

@@ -10,11 +10,11 @@ namespace WorkoutTracker.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GoalsController : ControllerBase
+    public class WorkoutsController : ControllerBase
     {
         #region Declarations
 
-        private readonly IGoalsService _goalsService;
+        private readonly IWorkoutsService _workoutsService;
 
         #endregion
 
@@ -23,10 +23,10 @@ namespace WorkoutTracker.Controllers
         /// <summary>
         /// Ctor.
         /// </summary>
-        /// <param name="goalsService"></param>
-        public GoalsController(IGoalsService goalsService)
+        /// <param name="workoutsService"></param>
+        public WorkoutsController(IWorkoutsService workoutsService)
         {
-            _goalsService = goalsService;
+            _workoutsService = workoutsService;
         }
 
         #endregion
@@ -34,7 +34,7 @@ namespace WorkoutTracker.Controllers
         #region GET
 
         /// <summary>
-        /// Get a Goal by Id.
+        /// Get a Workout by Id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -44,24 +44,24 @@ namespace WorkoutTracker.Controllers
         {
             try
             {
-                var goal = await _goalsService.Get(id);
-                return Ok(Conversion<GoalDto>.ReturnResponse(goal));
+                var workout = await _workoutsService.Get(id);
+                return Ok(Conversion<WorkoutDto>.ReturnResponse(workout));
             }
             catch (Exception ex)
             {
-                var errRet = new DataResponse<GoalDto>
+                var errRet = new DataResponse<WorkoutDto>
                 {
                     Data = null,
                     ResponseCode = EDataResponseCode.GenericError,
                     Succeeded = false,
                     ErrorMessage = ex.Message
                 };
-                return BadRequest(Conversion<GoalDto>.ReturnResponse(errRet));
+                return BadRequest(Conversion<WorkoutDto>.ReturnResponse(errRet));
             }
         }
 
         /// <summary>
-        /// Get all Goals for User.
+        /// Get all Workouts for User.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -70,19 +70,19 @@ namespace WorkoutTracker.Controllers
         {
             try
             {
-                var goals = await _goalsService.GetAllByUserId(userId);
-                return Ok(Conversion<List<GoalDto>>.ReturnResponse(goals));
+                var workouts = await _workoutsService.GetAllByUserId(userId);
+                return Ok(Conversion<List<WorkoutDto>>.ReturnResponse(workouts));
             }
             catch (Exception ex)
             {
-                var errRet = new DataResponse<List<GoalDto>>
+                var errRet = new DataResponse<List<WorkoutDto>>
                 {
                     Data = null,
                     ResponseCode = EDataResponseCode.GenericError,
                     Succeeded = false,
                     ErrorMessage = ex.Message
                 };
-                return BadRequest(Conversion<List<GoalDto>>.ReturnResponse(errRet));
+                return BadRequest(Conversion<List<WorkoutDto>>.ReturnResponse(errRet));
             }
         }
 
@@ -91,14 +91,14 @@ namespace WorkoutTracker.Controllers
         #region CREATE
 
         /// <summary>
-        /// Create a new Goal.
+        /// Create a new Workout.
         /// </summary>
-        /// <param name="goal"></param>
+        /// <param name="createWorkoutDto"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         [Route("create")]
-        public async Task<IActionResult> Create([FromBody] GoalDto goal)
+        public async Task<IActionResult> Create([FromBody] CreateWorkoutDto createWorkoutDto)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace WorkoutTracker.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var result = await _goalsService.Create(goal);
+                var result = await _workoutsService.Create(createWorkoutDto);
                 return Ok(Conversion<int>.ReturnResponse(result));
             }
             catch (Exception ex)
@@ -127,18 +127,18 @@ namespace WorkoutTracker.Controllers
         #region UPDATE
 
         /// <summary>
-        /// Update an existing Goal.
+        /// Update an existing Workout.
         /// </summary>
-        /// <param name="goal"></param>
+        /// <param name="updateWorkoutDto"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         [Route("update")]
-        public async Task<IActionResult> Update(GoalDto goal)
+        public async Task<IActionResult> Update(CreateWorkoutDto updateWorkoutDto)
         {
             try
             {
-                var result = await _goalsService.Update(goal);
+                var result = await _workoutsService.Update(updateWorkoutDto);
                 return Ok(Conversion<bool>.ReturnResponse(result));
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace WorkoutTracker.Controllers
         #region DELETE
 
         /// <summary>
-        /// Delete a Goal by Id.
+        /// Delete a Workout by Id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -170,7 +170,7 @@ namespace WorkoutTracker.Controllers
         {
             try
             {
-                var result = await _goalsService.Delete(id);
+                var result = await _workoutsService.Delete(id);
                 return Ok(Conversion<bool>.ReturnResponse(result));
             }
             catch (Exception ex)
