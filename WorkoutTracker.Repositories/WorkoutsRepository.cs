@@ -8,6 +8,7 @@ using WorkoutTracker.Repositories.Interfaces;
 using WorkoutTracker.Shared.DataContracts.Enums;
 using WorkoutTracker.Shared.DataContracts.Resources;
 using WorkoutTracker.Shared.DataContracts.Responses;
+#pragma warning disable CS8629
 
 namespace WorkoutTracker.Repositories
 {
