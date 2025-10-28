@@ -11,7 +11,7 @@ using WorkoutTracker.Shared.DataContracts.Responses;
 
 namespace WorkoutTracker.Repositories
 {
-    public class GoalsRepository : IGoalsRepository
+    public class ExercisesRepository : IExercisesRepository
     {
         #region Declarations
 
@@ -21,7 +21,7 @@ namespace WorkoutTracker.Repositories
 
         #endregion
 
-        #region Ctor.
+        #region Ctor
 
         /// <summary>
         /// Ctor.
@@ -29,7 +29,7 @@ namespace WorkoutTracker.Repositories
         /// <param name="applicationDbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="httpContextAccessor"></param>
-        public GoalsRepository(ApplicationDbContext applicationDbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public ExercisesRepository(ApplicationDbContext applicationDbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _applicationDbContext = applicationDbContext;
             _mapper = mapper;
@@ -41,38 +41,38 @@ namespace WorkoutTracker.Repositories
         #region GET
 
         /// <summary>
-        /// Get Goal by Id
+        /// Get Exercise by Id.
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public async Task<DataResponse<GoalDto>> Get(int Id)
+        public async Task<DataResponse<ExerciseDto>> Get(int Id)
         {
-            var result = new DataResponse<GoalDto>() { Data = null, ErrorMessage = null, Succeeded = false };
+            var result = new DataResponse<ExerciseDto>() { Data = null, ErrorMessage = null, Succeeded = false };
 
             try
             {
-                var goal = await _applicationDbContext.Goals.FirstOrDefaultAsync(x => x.Id == Id);
+                var exercise = await _applicationDbContext.Exercises.FirstOrDefaultAsync(x => x.Id == Id);
 
-                if (goal == null)
+                if (exercise == null)
                 {
                     result.ResponseCode = EDataResponseCode.NoDataFound;
-                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Goal), Id);
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Exercise), Id);
                     result.Data = null;
 
                     return result;
                 }
 
-                var goalDto = _mapper.Map<Goal, GoalDto>(goal);
+                var exerciseDto = _mapper.Map<Exercise, ExerciseDto>(exercise);
                 result.ResponseCode = EDataResponseCode.Success;
                 result.Succeeded = true;
-                result.Data = goalDto;
+                result.Data = exerciseDto;
 
                 return result;
             }
             catch (Exception)
             {
                 result.ResponseCode = EDataResponseCode.GenericError;
-                result.ErrorMessage = string.Format(ResponseMessages.GetEntityFailed, nameof(Goal), Id);
+                result.ErrorMessage = string.Format(ResponseMessages.GetEntityFailed, nameof(Exercise), Id);
                 result.Data = null;
 
                 return result;
@@ -80,43 +80,37 @@ namespace WorkoutTracker.Repositories
         }
 
         /// <summary>
-        /// Get all Goals for User.
+        /// Get all Exercises.
         /// </summary>
-        /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<DataResponse<List<GoalDto>>> GetAllByUserId(string userId)
+        public async Task<DataResponse<List<ExerciseDto>>> GetAll()
         {
-            var result = new DataResponse<List<GoalDto>>() { Data = null, ErrorMessage = null, Succeeded = false };
+            var result = new DataResponse<List<ExerciseDto>> { Data = null, ErrorMessage = null, Succeeded = false };
 
             try
             {
-                var goals = await _applicationDbContext
-                    .Goals
-                    .Where(x => x.UserId == userId)
-                    .ToListAsync();
+                var exercises = await _applicationDbContext.Exercises.ToListAsync();
 
-                if (goals == null)
+                if (exercises == null)
                 {
                     result.ResponseCode = EDataResponseCode.NoDataFound;
                     result.ErrorMessage = ResponseMessages.NoDataFound;
-                    result.Succeeded = false;
-                    result.Data = null;
 
                     return result;
                 }
 
-                var goalDtos = _mapper.Map<List<Goal>, List<GoalDto>>(goals);
+                var exerciseDtos = _mapper.Map<List<Exercise>, List<ExerciseDto>>(exercises);
+
                 result.ResponseCode = EDataResponseCode.Success;
                 result.Succeeded = true;
-                result.Data = goalDtos;
+                result.Data = exerciseDtos;
 
                 return result;
             }
             catch (Exception)
             {
                 result.ResponseCode = EDataResponseCode.GenericError;
-                result.ErrorMessage = string.Format(ResponseMessages.GettingEntitiesFailed, nameof(Goal));
-                result.Succeeded = false;
+                result.ErrorMessage = string.Format(ResponseMessages.GettingEntitiesFailed, nameof(Exercise));
                 result.Data = null;
 
                 return result;
@@ -128,57 +122,55 @@ namespace WorkoutTracker.Repositories
         #region CREATE
 
         /// <summary>
-        /// Create Goal.
+        /// Create Exercise.
         /// </summary>
-        /// <param name="goalDto"></param>
+        /// <param name="exerciseDto"></param>
         /// <returns></returns>
-        public async Task<DataResponse<int>> Create(GoalDto goalDto)
+        public async Task<DataResponse<int>> Create(ExerciseDto exerciseDto)
         {
             var result = new DataResponse<int>();
 
             try
             {
-                if (goalDto == null)
+                if (exerciseDto == null)
                 {
                     result.ResponseCode = EDataResponseCode.InvalidInputParameter;
-                    result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(Goal));
+                    result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(Exercise));
 
                     return result;
                 }
 
-                var existingGoal = await _applicationDbContext.Goals.FirstOrDefaultAsync(x => x.Id == goalDto.Id);
+                var existingExercise = await _applicationDbContext.Exercises.FirstOrDefaultAsync(x => x.Id == exerciseDto.Id);
 
-                if (existingGoal != null)
+                if (existingExercise != null)
                 {
                     result.ResponseCode = EDataResponseCode.InvalidInputParameter;
-                    result.ErrorMessage = string.Format(ResponseMessages.EntityAlreadyExists, nameof(Goal), goalDto.Id);
+                    result.ErrorMessage = string.Format(ResponseMessages.EntityAlreadyExists, nameof(Exercise), exerciseDto.Id);
 
                     return result;
                 }
 
                 var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
-                goalDto.CreatedBy = user;
-                goalDto.ModifiedBy = user;
+                exerciseDto.CreatedBy = user;
+                exerciseDto.ModifiedBy = user;
 
-                var goal = new Goal
+                var exercise = new Exercise
                 {
-                    Name = goalDto.Name,
-                    CurrentValue = goalDto.CurrentValue,
-                    TargetValue = goalDto.TargetValue,
-                    UserId = goalDto.UserId,
-                    IsCompleted = goalDto.IsCompleted,
-                    CreatedBy = goalDto.CreatedBy,
-                    ModifiedBy = goalDto.ModifiedBy,
+                    Name = exerciseDto.Name,
+                    Description = exerciseDto.Description,
+                    MuscleGroup = exerciseDto.MuscleGroup,
+                    CreatedBy = exerciseDto.CreatedBy,
+                    ModifiedBy = exerciseDto.ModifiedBy,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow,
                 };
 
-                await _applicationDbContext.Goals.AddAsync(goal);
+                await _applicationDbContext.Exercises.AddAsync(exercise);
                 await _applicationDbContext.SaveChangesAsync();
 
                 result.Succeeded = true;
                 result.ResponseCode = EDataResponseCode.Success;
-                result.Data = goal.Id;
+                result.Data = exercise.Id;
 
                 return result;
 
@@ -186,7 +178,7 @@ namespace WorkoutTracker.Repositories
             catch (Exception)
             {
                 result.ResponseCode = EDataResponseCode.GenericError;
-                result.ErrorMessage = string.Format(ResponseMessages.UnsuccessfulCreationOfEntity, nameof(Workout));
+                result.ErrorMessage = string.Format(ResponseMessages.UnsuccessfulCreationOfEntity, nameof(Exercise));
 
                 return result;
             }
@@ -197,40 +189,40 @@ namespace WorkoutTracker.Repositories
         #region UPDATE
 
         /// <summary>
-        /// Update an existing Goal.
+        /// Update an existing Exercise.
         /// </summary>
-        /// <param name="goalDto"></param>
+        /// <param name="exerciseDto"></param>
         /// <returns></returns>
-        public async Task<DataResponse<bool>> Update(GoalDto goalDto)
+        public async Task<DataResponse<bool>> Update(ExerciseDto exerciseDto)
         {
             var result = new DataResponse<bool>() { Data = false, Succeeded = false };
 
-            if (goalDto == null)
+            if (exerciseDto == null)
             {
                 result.ResponseCode = EDataResponseCode.InvalidInputParameter;
-                result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(Goal));
+                result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(Exercise));
 
                 return result;
             }
 
             try
             {
-                var existingGoal = await _applicationDbContext.Goals.FirstOrDefaultAsync(x => x.Id == goalDto.Id);
+                var existingExercise = await _applicationDbContext.Exercises.FirstOrDefaultAsync(x => x.Id == exerciseDto.Id);
 
-                if (existingGoal == null)
+                if (existingExercise == null)
                 {
                     result.ResponseCode = EDataResponseCode.NoDataFound;
-                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Goal), goalDto.Id);
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Exercise), exerciseDto.Id);
                     result.Data = false;
 
                     return result;
                 }
 
                 var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
-                goalDto.ModifiedBy = user;
-                goalDto.DateModified = DateTime.UtcNow;
+                exerciseDto.ModifiedBy = user;
+                exerciseDto.DateModified = DateTime.UtcNow;
 
-                _mapper.Map(goalDto, existingGoal);
+                _mapper.Map(exerciseDto, existingExercise);
 
                 await _applicationDbContext.SaveChangesAsync();
 
@@ -243,7 +235,7 @@ namespace WorkoutTracker.Repositories
             catch (Exception)
             {
                 result.ResponseCode = EDataResponseCode.GenericError;
-                result.ErrorMessage = string.Format(ResponseMessages.UnsuccessfulUpdateOfEntity, nameof(Goal), goalDto.Id);
+                result.ErrorMessage = string.Format(ResponseMessages.UnsuccessfulUpdateOfEntity, nameof(Exercise), exerciseDto.Id);
                 result.Data = false;
 
                 return result;
@@ -255,7 +247,7 @@ namespace WorkoutTracker.Repositories
         #region DELETE
 
         /// <summary>
-        /// Delete Goal by Id.
+        /// Delete Exercise by Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -265,17 +257,17 @@ namespace WorkoutTracker.Repositories
 
             try
             {
-                var goal = await _applicationDbContext.Goals.FirstOrDefaultAsync(x => x.Id == Id);
+                var exercise = await _applicationDbContext.Exercises.FirstOrDefaultAsync(x => x.Id == Id);
 
-                if (goal == null)
+                if (exercise == null)
                 {
                     result.ResponseCode = EDataResponseCode.NoDataFound;
-                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Goal), Id);
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Exercise), Id);
                     result.Data = false;
 
                     return result;
                 }
-                _applicationDbContext.Goals.Remove(goal);
+                _applicationDbContext.Exercises.Remove(exercise);
                 await _applicationDbContext.SaveChangesAsync();
 
                 result.Succeeded = true;
@@ -287,7 +279,7 @@ namespace WorkoutTracker.Repositories
             catch (Exception)
             {
                 result.ResponseCode = EDataResponseCode.GenericError;
-                result.ErrorMessage = string.Format(ResponseMessages.DeletionFailed, nameof(Goal), Id);
+                result.ErrorMessage = string.Format(ResponseMessages.DeletionFailed, nameof(Exercise), Id);
                 result.Data = false;
                 return result;
             }
