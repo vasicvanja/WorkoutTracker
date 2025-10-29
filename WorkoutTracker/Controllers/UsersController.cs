@@ -158,12 +158,60 @@ namespace WorkoutTracker.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        [Route("{id}/enableDisableUser")]
+        [Route("enableDisableUser/{id}")]
         public async Task<IActionResult> EnableDisableUser(string id, bool enabled)
         {
             try
             {
                 var result = await _usersService.EnableDisableUser(id, enabled);
+                return Ok(Conversion<bool>.ReturnResponse(result));
+            }
+            catch (Exception ex)
+            {
+                var errRet = new DataResponse<bool>
+                {
+                    ResponseCode = EDataResponseCode.GenericError,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message
+                };
+                return BadRequest(Conversion<bool>.ReturnResponse(errRet));
+            }
+        }
+
+        #endregion
+
+        #region USER ROLE MANAGEMENT
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("addRoleToUser/{id}")]
+        public async Task<IActionResult> AddRoleToUser(string id, string roleName)
+        {
+            try
+            {
+                var result = await _usersService.AddRoleToUser(id, roleName);
+                return Ok(Conversion<bool>.ReturnResponse(result));
+            }
+            catch (Exception ex)
+            {
+                var errRet = new DataResponse<bool>
+                {
+                    ResponseCode = EDataResponseCode.GenericError,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message
+                };
+                return BadRequest(Conversion<bool>.ReturnResponse(errRet));
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("removeRoleFromUser/{id}")]
+        public async Task<IActionResult> RemoveRoleFromUser(string id, string roleName)
+        {
+            try
+            {
+                var result = await _usersService.RemoveRoleFromUser(id, roleName);
                 return Ok(Conversion<bool>.ReturnResponse(result));
             }
             catch (Exception ex)

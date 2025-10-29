@@ -476,6 +476,174 @@ namespace WorkoutTracker.Repositories
 
         #endregion
 
+        #region USER ROLE MANAGEMENT
+
+        /// <summary>
+        /// Add Role to User.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<DataResponse<bool>> AddRoleToUser(string userId, string roleName)
+        {
+            var result = new DataResponse<bool> { Data = false, Succeeded = false };
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(ApplicationUser.Id));
+
+                    return result;
+                }
+
+                if (string.IsNullOrEmpty(roleName))
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(IdentityRole.Name));
+
+                    return result;
+                }
+
+                // Check if user exists
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    result.ResponseCode = EDataResponseCode.NoDataFound;
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(ApplicationUser), userId);
+
+                    return result;
+                }
+
+                // Check if role exists
+                var role = await _roleManager.FindByNameAsync(roleName);
+
+                if (role == null)
+                {
+                    result.ResponseCode = EDataResponseCode.NoDataFound;
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(IdentityRole), roleName);
+
+                    return result;
+                }
+
+                // Check if user already has the role
+                if (await _userManager.IsInRoleAsync(user, roleName))
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = string.Format(ResponseMessages.UserAlreadyHasRole, user.UserName, roleName);
+
+                    return result;
+                }
+
+                // Add role to user
+                var assignRoleToUser = await _userManager.AddToRoleAsync(user, roleName);
+
+                if (!assignRoleToUser.Succeeded)
+                {
+                    result.ResponseCode = EDataResponseCode.GenericError;
+                    result.ErrorMessage = string.Format(ResponseMessages.FailedToAssignRoleToUser, roleName, user.UserName, user.Id);
+                    return result;
+                }
+
+                result.ResponseCode = EDataResponseCode.Success;
+                result.Succeeded = true;
+                result.Data = true;
+
+                return result;
+
+            }
+            catch (Exception)
+            {
+                result.ResponseCode = EDataResponseCode.GenericError;
+                result.ErrorMessage = string.Format(ResponseMessages.FailedToAssignRoleToUserId, roleName, userId);
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Remove Role from User.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task<DataResponse<bool>> RemoveRoleFromUser(string userId, string roleName)
+        {
+            var result = new DataResponse<bool> { Data = false, Succeeded = false };
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(ApplicationUser.Id));
+
+                    return result;
+                }
+
+                if (string.IsNullOrEmpty(roleName))
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(IdentityRole.Name));
+
+                    return result;
+                }
+
+                // Check if user exists
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    result.ResponseCode = EDataResponseCode.NoDataFound;
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(ApplicationUser), userId);
+
+                    return result;
+                }
+
+                // Check if role exists
+                var role = await _roleManager.FindByNameAsync(roleName);
+
+                if (role == null)
+                {
+                    result.ResponseCode = EDataResponseCode.NoDataFound;
+                    result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(IdentityRole), roleName);
+
+                    return result;
+                }
+
+                // Check if user has the role
+                if (await _userManager.IsInRoleAsync(user, roleName))
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = string.Format(ResponseMessages.UserDoesNotHaveRole, user.UserName, roleName);
+
+                    return result;
+                }
+
+                var removeRoleFromUser = await _userManager.RemoveFromRoleAsync(user, roleName);
+
+                if (!removeRoleFromUser.Succeeded)
+                {
+                    result.ResponseCode = EDataResponseCode.GenericError;
+                    result.ErrorMessage = string.Format(ResponseMessages.FailedToRemoveRoleFromUser, roleName, user.UserName, user.Id);
+                    return result;
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                result.ResponseCode = EDataResponseCode.GenericError;
+                result.ErrorMessage = string.Format(ResponseMessages.FailedToRemoveRoleFromUser, roleName, userId);
+
+                return result;
+            }
+        }
+
+        #endregion
+
         #region DELETE
 
         /// <summary>
