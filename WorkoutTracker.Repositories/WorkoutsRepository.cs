@@ -201,7 +201,7 @@ namespace WorkoutTracker.Repositories
         /// <summary>
         /// Update a Workout.
         /// </summary>
-        /// <param name="createCycleDto"></param>
+        /// <param name="updateWorkoutDto"></param>
         /// <returns></returns>
         public async Task<DataResponse<bool>> Update(CreateWorkoutDto updateWorkoutDto)
         {
