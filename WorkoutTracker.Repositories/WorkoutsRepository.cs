@@ -141,16 +141,6 @@ namespace WorkoutTracker.Repositories
                     return result;
                 }
 
-                var existingWorkout = await _applicationDbContext.Workouts.FirstOrDefaultAsync(x => x.Id == createWorkoutDto.Id);
-
-                if (existingWorkout != null)
-                {
-                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
-                    result.ErrorMessage = string.Format(ResponseMessages.EntityAlreadyExists, nameof(Workout), createWorkoutDto.Id);
-
-                    return result;
-                }
-
                 var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
                 createWorkoutDto.CreatedBy = user;
                 createWorkoutDto.ModifiedBy = user;

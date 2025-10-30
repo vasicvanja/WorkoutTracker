@@ -147,16 +147,6 @@ namespace WorkoutTracker.Repositories
                     return result;
                 }
 
-                var existingMeasurement = await _applicationDbContext.Measurements.FirstOrDefaultAsync(x => x.Id == measurementDto.Id);
-
-                if (existingMeasurement != null)
-                {
-                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
-                    result.ErrorMessage = string.Format(ResponseMessages.EntityAlreadyExists, nameof(Measurement), measurementDto.Id);
-
-                    return result;
-                }
-
                 var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
                 measurementDto.CreatedBy = user;
                 measurementDto.ModifiedBy = user;
