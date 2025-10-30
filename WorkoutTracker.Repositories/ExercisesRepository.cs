@@ -153,6 +153,7 @@ namespace WorkoutTracker.Repositories
                     ModifiedBy = exerciseDto.ModifiedBy,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow,
+                    WorkoutExercises = new List<WorkoutExercise>()
                 };
 
                 await _applicationDbContext.Exercises.AddAsync(exercise);
