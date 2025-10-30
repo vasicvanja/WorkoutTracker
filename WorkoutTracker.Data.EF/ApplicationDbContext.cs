@@ -13,10 +13,6 @@ namespace WorkoutTracker.Data.EF
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure the composite key for the WorkoutExercise join table
-            modelBuilder.Entity<WorkoutExercise>()
-                .HasKey(we => new { we.WorkoutId, we.ExerciseId });
-
             modelBuilder.Entity<WorkoutExercise>()
                 .HasOne(we => we.Workout)
                 .WithMany(w => w.WorkoutExercises)
