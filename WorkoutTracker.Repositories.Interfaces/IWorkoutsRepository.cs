@@ -24,14 +24,22 @@ namespace WorkoutTracker.Repositories.Interfaces
         /// </summary>
         /// <param name="workoutDto"></param>
         /// <returns></returns>
-        Task<DataResponse<int>> Create(CreateWorkoutDto createWorkoutDto);
+        Task<DataResponse<int>> Create(WorkoutDto workoutDto);
 
         /// <summary>
         /// Update an existing Workout.
         /// </summary>
-        /// <param name="workoutDto"></param>
+        /// <param name="updateWorkoutDto"></param>
         /// <returns></returns>
-        Task<DataResponse<bool>> Update(CreateWorkoutDto updateWorkoutDto);
+        Task<DataResponse<bool>> Update(WorkoutDto updateWorkoutDto);
+
+        /// <summary>
+        /// Add Exercises to an existing Workout.
+        /// </summary>
+        /// <param name="workoutId"></param>
+        /// <param name="exerciseIds"></param>
+        /// <returns></returns>
+        Task<DataResponse<bool>> AddExercisesToWorkout(int workoutId, List<AddExerciseToWorkoutDto> exercises);
 
         /// <summary>
         /// Delete a Workout by Id.

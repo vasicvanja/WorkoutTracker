@@ -8,7 +8,6 @@ using WorkoutTracker.Repositories.Interfaces;
 using WorkoutTracker.Shared.DataContracts.Enums;
 using WorkoutTracker.Shared.DataContracts.Resources;
 using WorkoutTracker.Shared.DataContracts.Responses;
-#pragma warning disable CS8629
 
 namespace WorkoutTracker.Repositories
 {
@@ -46,7 +45,10 @@ namespace WorkoutTracker.Repositories
 
             try
             {
-                var workout = await _applicationDbContext.Workouts.FirstOrDefaultAsync(x => x.Id == Id);
+                var workout = await _applicationDbContext.Workouts
+                    .Include(we => we.WorkoutExercises)
+                    .ThenInclude(e => e.Exercise)
+                    .FirstOrDefaultAsync(x => x.Id == Id);
 
                 if (workout == null)
                 {
@@ -87,6 +89,8 @@ namespace WorkoutTracker.Repositories
             {
                 var workouts = await _applicationDbContext
                     .Workouts
+                    .Include(we => we.WorkoutExercises)
+                    .ThenInclude(e => e.Exercise)
                     .Where(x => x.UserId == userId)
                     .ToListAsync();
 
@@ -125,15 +129,15 @@ namespace WorkoutTracker.Repositories
         /// <summary>
         /// Create Workout.
         /// </summary>
-        /// <param name="createWorkoutDto"></param>
+        /// <param name="workoutDto"></param>
         /// <returns></returns>
-        public async Task<DataResponse<int>> Create(CreateWorkoutDto createWorkoutDto)
+        public async Task<DataResponse<int>> Create(WorkoutDto workoutDto)
         {
             var result = new DataResponse<int>();
 
             try
             {
-                if (createWorkoutDto == null)
+                if (workoutDto == null)
                 {
                     result.ResponseCode = EDataResponseCode.InvalidInputParameter;
                     result.ErrorMessage = string.Format(ResponseMessages.InvalidInputParameter, nameof(Workout));
@@ -141,39 +145,22 @@ namespace WorkoutTracker.Repositories
                     return result;
                 }
 
-                var existingWorkout = await _applicationDbContext.Workouts.FirstOrDefaultAsync(x => x.Id == createWorkoutDto.Id);
-
-                if (existingWorkout != null)
-                {
-                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
-                    result.ErrorMessage = string.Format(ResponseMessages.EntityAlreadyExists, nameof(Workout), createWorkoutDto.Id);
-
-                    return result;
-                }
-
                 var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
-                createWorkoutDto.CreatedBy = user;
-                createWorkoutDto.ModifiedBy = user;
+                workoutDto.CreatedBy = user;
+                workoutDto.ModifiedBy = user;
 
                 var workout = new Workout
                 {
-                    Name = createWorkoutDto.Name,
-                    Volume = createWorkoutDto.Volume,
-                    Duration = createWorkoutDto.Duration,
-                    UserId = createWorkoutDto.UserId,
-                    CreatedBy = createWorkoutDto.CreatedBy,
-                    ModifiedBy = createWorkoutDto.ModifiedBy,
+                    Name = workoutDto.Name,
+                    Volume = workoutDto.Volume,
+                    Duration = workoutDto.Duration,
+                    UserId = workoutDto.UserId,
+                    CreatedBy = workoutDto.CreatedBy,
+                    ModifiedBy = workoutDto.ModifiedBy,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow,
+                    WorkoutExercises = new List<WorkoutExercise>()
                 };
-
-                if (createWorkoutDto.WorkoutExercisesIds != null && createWorkoutDto.WorkoutExercisesIds.Any())
-                {
-                    var workoutExercises = await _applicationDbContext.WorkoutExercises
-                        .Where(we => createWorkoutDto.WorkoutExercisesIds.Contains(we.Id))
-                        .ToListAsync();
-                    workout.WorkoutExercises = workoutExercises;
-                }
 
                 await _applicationDbContext.Workouts.AddAsync(workout);
                 await _applicationDbContext.SaveChangesAsync();
@@ -203,7 +190,7 @@ namespace WorkoutTracker.Repositories
         /// </summary>
         /// <param name="updateWorkoutDto"></param>
         /// <returns></returns>
-        public async Task<DataResponse<bool>> Update(CreateWorkoutDto updateWorkoutDto)
+        public async Task<DataResponse<bool>> Update(WorkoutDto updateWorkoutDto)
         {
             var result = new DataResponse<bool>() { Data = false, Succeeded = false };
 
@@ -215,12 +202,17 @@ namespace WorkoutTracker.Repositories
                 return result;
             }
 
+            await using var transacton = await _applicationDbContext.Database.BeginTransactionAsync();
+
             try
             {
-                var existingWorkout = await _applicationDbContext.Workouts.FirstOrDefaultAsync(x => x.Id == updateWorkoutDto.Id);
+                var existingWorkout = await _applicationDbContext.Workouts
+                    .Include(we => we.WorkoutExercises)
+                    .FirstOrDefaultAsync(x => x.Id == updateWorkoutDto.Id);
 
                 if (existingWorkout == null)
                 {
+                    await transacton.RollbackAsync();
                     result.ResponseCode = EDataResponseCode.NoDataFound;
                     result.ErrorMessage = string.Format(ResponseMessages.NoDataFoundForKey, nameof(Workout), updateWorkoutDto.Id);
 
@@ -233,19 +225,49 @@ namespace WorkoutTracker.Repositories
 
                 _mapper.Map(updateWorkoutDto, existingWorkout);
 
-                if (updateWorkoutDto.WorkoutExercisesIds.Any())
-                {
-                    var workoutExercisesToUpdate = await _applicationDbContext.WorkoutExercises
-                        .Where(a => updateWorkoutDto.WorkoutExercisesIds.Contains(a.Id))
-                        .ToListAsync();
+                // Exercises sync logic
+                var updatedExercises = updateWorkoutDto.WorkoutExercises ?? new List<WorkoutExerciseDto>();
+                var updatedExercisesIds = updatedExercises.Select(e => e.ExerciseId).ToList();
 
-                    foreach (var workoutExercise in workoutExercisesToUpdate)
+                // Remove deleted exercises
+                var toRemove = existingWorkout.WorkoutExercises
+                    .Where(we => !updatedExercisesIds.Contains(we.ExerciseId))
+                    .ToList();
+
+                if (toRemove.Any())
+                {
+                   _applicationDbContext.WorkoutExercises.RemoveRange(toRemove);
+                }
+
+                // Add or update exercises
+                foreach (var exercise in updatedExercises)
+                {
+                    var existingExercise = existingWorkout.WorkoutExercises
+                        .FirstOrDefault(we => we.ExerciseId == exercise.ExerciseId);
+
+                    if (existingExercise == null)
                     {
-                        workoutExercise.WorkoutId = (int)updateWorkoutDto.Id;
+                        // Add new
+                        existingWorkout.WorkoutExercises.Add(new WorkoutExercise
+                        {
+                            WorkoutId = existingWorkout.Id,
+                            ExerciseId = exercise.ExerciseId,
+                            Sets = exercise.Sets,
+                            Repetitions = exercise.Repetitions,
+                            Weight = exercise.Weight
+                        });
+                    }
+                    else
+                    {
+                        // Update existing
+                        existingExercise.Sets = exercise.Sets;
+                        existingExercise.Repetitions = exercise.Repetitions;
+                        existingExercise.Weight = exercise.Weight;
                     }
                 }
 
                 await _applicationDbContext.SaveChangesAsync();
+                await transacton.CommitAsync();
 
                 result.Data = true;
                 result.Succeeded = true;
@@ -255,8 +277,92 @@ namespace WorkoutTracker.Repositories
             }
             catch (Exception)
             {
+                await transacton.RollbackAsync();
                 result.ResponseCode = EDataResponseCode.GenericError;
                 result.ErrorMessage = string.Format(ResponseMessages.UnsuccessfulUpdateOfEntity, nameof(Workout));
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Add Exercises to an existing Workout.
+        /// </summary>
+        /// <param name="workoutId"></param>
+        /// <param name="exerciseIds"></param>
+        /// <returns></returns>
+        public async Task<DataResponse<bool>> AddExercisesToWorkout(int workoutId, List<AddExerciseToWorkoutDto> exercises)
+        {
+            var result = new DataResponse<bool>() { Data = false, Succeeded = false };
+
+            await using var transaction = await _applicationDbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (exercises == null || exercises.Count == 0)
+                {
+                    result.ResponseCode = EDataResponseCode.InvalidInputParameter;
+                    result.ErrorMessage = ResponseMessages.ExercisesMustBeProvided;
+
+                    return result;
+                }
+
+                // Fetch the target workout
+                var workout = await _applicationDbContext.Workouts
+                    .Include(we => we.WorkoutExercises)
+                    .FirstOrDefaultAsync(x => x.Id == workoutId);
+
+                if (workout == null)
+                {
+                    result.ResponseCode = EDataResponseCode.NoDataFound;
+                    result.ErrorMessage = ResponseMessages.NoDataFound;
+
+                    return result;
+                }
+
+                // Extract exercise IDs
+                var exerciseIds = exercises.Select(e => e.ExerciseId).ToList();
+
+                // Fetch valid exercises
+                var validExercises = await _applicationDbContext.Exercises
+                    .Where(e => exerciseIds.Contains(e.Id))
+                    .ToListAsync();
+
+                if (!validExercises.Any())
+                {
+                    result.ResponseCode = EDataResponseCode.NoDataFound;
+                    result.ErrorMessage = ResponseMessages.NoValidExercisesProvided;
+
+                    return result;
+                }
+
+                // Add exercises to the workout
+                foreach (var exercise in exercises)
+                {
+                    workout.WorkoutExercises.Add(new WorkoutExercise
+                    {
+                        WorkoutId = workout.Id,
+                        ExerciseId = exercise.ExerciseId,
+                        Sets = exercise.Sets,
+                        Repetitions = exercise.Repetitions,
+                        Weight = exercise.Weight
+                    });
+                }
+
+                await _applicationDbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                result.Data = true;
+                result.Succeeded = true;
+                result.ResponseCode = EDataResponseCode.Success;
+
+                return result;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                result.ResponseCode = EDataResponseCode.GenericError;
+                result.ErrorMessage = string.Format(ResponseMessages.FailedToAddExercisesToWorkout, workoutId);
 
                 return result;
             }

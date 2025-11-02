@@ -45,16 +45,24 @@ namespace WorkoutTracker.Services
         /// <summary>
         /// Create a Workout.
         /// </summary>
-        /// <param name="goalDto"></param>
+        /// <param name="workoutDto"></param>
         /// <returns></returns>
-        public async Task<DataResponse<int>> Create(CreateWorkoutDto createWorkoutDto) => await _workoutsRepository.Create(createWorkoutDto);
+        public async Task<DataResponse<int>> Create(WorkoutDto workoutDto) => await _workoutsRepository.Create(workoutDto);
 
         /// <summary>
         /// Update an existing Workout.
         /// </summary>
-        /// <param name="goalDto"></param>
+        /// <param name="updateWorkoutDto"></param>
         /// <returns></returns>
-        public async Task<DataResponse<bool>> Update(CreateWorkoutDto updateWorkoutDto) => await _workoutsRepository.Update(updateWorkoutDto);
+        public async Task<DataResponse<bool>> Update(WorkoutDto updateWorkoutDto) => await _workoutsRepository.Update(updateWorkoutDto);
+
+        /// <summary>
+        /// Add Exercises to an existing Workout.
+        /// </summary>
+        /// <param name="workoutId"></param>
+        /// <param name="exerciseIds"></param>
+        /// <returns></returns>
+        public async Task<DataResponse<bool>> AddExercisesToWorkout(int workoutId, List<AddExerciseToWorkoutDto> exercises) => await _workoutsRepository.AddExercisesToWorkout(workoutId, exercises);
 
         /// <summary>
         /// Delete Workout by Id.

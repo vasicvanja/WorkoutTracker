@@ -93,12 +93,12 @@ namespace WorkoutTracker.Controllers
         /// <summary>
         /// Create a new Workout.
         /// </summary>
-        /// <param name="createWorkoutDto"></param>
+        /// <param name="workoutDto"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         [Route("create")]
-        public async Task<IActionResult> Create([FromBody] CreateWorkoutDto createWorkoutDto)
+        public async Task<IActionResult> Create([FromBody] WorkoutDto workoutDto)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace WorkoutTracker.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var result = await _workoutsService.Create(createWorkoutDto);
+                var result = await _workoutsService.Create(workoutDto);
                 return Ok(Conversion<int>.ReturnResponse(result));
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace WorkoutTracker.Controllers
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         [Route("update")]
-        public async Task<IActionResult> Update(CreateWorkoutDto updateWorkoutDto)
+        public async Task<IActionResult> Update(WorkoutDto updateWorkoutDto)
         {
             try
             {
@@ -143,6 +143,35 @@ namespace WorkoutTracker.Controllers
             }
             catch (Exception ex)
 
+            {
+                var errRet = new DataResponse<bool>
+                {
+                    ResponseCode = EDataResponseCode.GenericError,
+                    Succeeded = false,
+                    ErrorMessage = ex.Message
+                };
+                return BadRequest(Conversion<bool>.ReturnResponse(errRet));
+            }
+        }
+
+        /// <summary>
+        /// Add exercises to an existing Workout.
+        /// </summary>
+        /// <param name="workoutId"></param>
+        /// <param name="exercises"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("{workoutId}/addExercisesToWorkout")]
+        public async Task<IActionResult> AddExercisesToWorkout(int workoutId, [FromBody] List<AddExerciseToWorkoutDto> exercises)
+        {
+            try
+            {
+                var result = await _workoutsService.AddExercisesToWorkout(workoutId, exercises);
+                return Ok(Conversion<bool>.ReturnResponse(result));
+
+            }
+            catch (Exception ex)
             {
                 var errRet = new DataResponse<bool>
                 {

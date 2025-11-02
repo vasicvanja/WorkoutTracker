@@ -376,7 +376,9 @@ namespace WorkoutTracker.Services
         /// <returns></returns>
         private string CreateToken(List<Claim> authClaims)
         {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWTSettings:SecurityKey")));
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWTSettings:SecurityKey")
+                ?? throw new InvalidOperationException(ResponseMessages.JWTSecurityKeyMissing)));
+
             var credentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
