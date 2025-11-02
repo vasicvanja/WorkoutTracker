@@ -45,5 +45,6 @@
         public const string FailedToAddExercisesToWorkout = "Failed to add Exercises to Workout with Id {0}";
         public const string ExercisesMustBeProvided = "At least one exercise must be provided.";
         public const string NoValidExercisesProvided = "No valid exercises found for provided IDs.";
+        public const string JWTSecurityKeyMissing = "JWT Security Key is missing from configuration.";
     }
 }
