@@ -13,16 +13,7 @@ namespace WorkoutTracker.Data.EF
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<WorkoutExercise>()
-                .HasOne(we => we.Workout)
-                .WithMany(w => w.WorkoutExercises)
-                .HasForeignKey(we => we.WorkoutId);
-
-            modelBuilder.Entity<WorkoutExercise>()
-                .HasOne(we => we.Exercise)
-                .WithMany(e => e.WorkoutExercises)
-                .HasForeignKey(we => we.ExerciseId);
-
+            // WorkoutExercise
             modelBuilder.Entity<WorkoutExercise>()
                .HasOne(we => we.Workout)
                .WithMany(w => w.WorkoutExercises)
@@ -35,18 +26,21 @@ namespace WorkoutTracker.Data.EF
                 .HasForeignKey(we => we.ExerciseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Workout
             modelBuilder.Entity<Workout>()
                 .HasOne(w => w.ApplicationUser)
                 .WithMany(u => u.Workouts)
                 .HasForeignKey(w => w.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Goal
             modelBuilder.Entity<Goal>()
                 .HasOne(g => g.ApplicationUser)
                 .WithMany(u => u.Goals)
                 .HasForeignKey(g => g.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Measurement
             modelBuilder.Entity<Measurement>()
                 .HasOne(m => m.ApplicationUser)
                 .WithMany(u => u.Measurements)
