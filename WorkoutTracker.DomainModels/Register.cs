@@ -17,6 +17,9 @@ namespace WorkoutTracker.DomainModels
         [Required(ErrorMessage = "Email is required!")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Phone number is required!")]
+        public string PhoneNumber { get; set; }
+
         [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[#$^+=!*()@%&]).{8,}$")]
         [Required(ErrorMessage = "Password is required!")]
         public string Password { get; set; }
