@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using WorkoutTracker.Shared.DataContracts.Enums;
 
 namespace WorkoutTracker.DomainModels
 {
@@ -6,6 +7,7 @@ namespace WorkoutTracker.DomainModels
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public EGender Gender { get; set; }  
         public decimal Weight { get; set; }
         public decimal Height { get; set; }
         public decimal BodyFatPercentage { get; set; }

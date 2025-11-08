@@ -153,6 +153,7 @@ namespace WorkoutTracker.Repositories
 
                 var measurement = new Measurement
                 {
+                    Gender = measurementDto.Gender,
                     Weight = measurementDto.Weight,
                     Height = measurementDto.Height,
                     BodyFatPercentage = measurementDto.BodyFatPercentage,
